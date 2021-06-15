@@ -1,0 +1,12 @@
+.vscode
+.github
+node_modules
+src
+.gitignore
+npm-shrinkwrap.json
+tsconfig.json
+*.map
+*.spec.js
+.travis.yml
+tslint.json
+.eslintrc.json
