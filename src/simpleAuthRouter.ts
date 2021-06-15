@@ -1,9 +1,24 @@
+// Copyright (c) Wictor Wilén. All rights reserved.
+// Licensed under the MIT license.
 import { Router } from "express";
 import { Passport } from "passport";
 import { BearerStrategy, IBearerStrategyOption, ITokenPayload, VerifyCallback } from "passport-azure-ad";
 import { ConfidentialClientApplication } from "@azure/msal-node";
 import { ISimpleAuthRouterOptions } from "./ISimpleAuthRouterOptions";
 
+/**
+ * Creates the Teams Simpleauth router
+ * @param options options for the router
+ * @returns an Express router
+ * @example
+ * express.use("/auth/token", simpleAuthRouter({
+ *   appId: process.env.TAB_APP_ID as string,
+ *   appIdUri: process.env.TAB_APP_URI as string,
+ *   appSecret: process.env.TAB_APP_SECRET as string,
+ *   scopes: ["Presence.Read"],
+ *   tenantId: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+* }));
+ */
 export const simpleAuthRouter = (options: ISimpleAuthRouterOptions): Router => {
     const router = Router();
 

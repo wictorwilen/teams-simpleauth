@@ -10,3 +10,4 @@ tsconfig.json
 .travis.yml
 tslint.json
 .eslintrc.json
+.eslintignore
