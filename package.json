@@ -1,6 +1,6 @@
 {
   "name": "teams-simpleauth",
-  "version": "1.0.0-preview2",
+  "version": "1.0.0-preview3",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
