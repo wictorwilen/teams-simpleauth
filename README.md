@@ -28,7 +28,7 @@ npm install teams-simpleauth @microsoft/teamsfx --save
 Next, in your server side component add the following import. For *yo teams* based applications this is in the `src/server/server.ts` file.
 
 ``` Typescript
-import { simpleAuthRouter } from "teams-simpleauth";
+import { SimpleAuthRouter } from "teams-simpleauth";
 ```
 
 And then after the express application is create add a statement like this to add and configure the router.
@@ -36,7 +36,7 @@ And then after the express application is create add a statement like this to ad
 `appId`, `appIdUri` and `appSecret` are retrieved from the AAD application that is used for the Teams SSO Tab. `scopes` is an array of delegated permission scopes you would like for the returned access token and finally `tenantId` is either the ID of the tenant or set to `common` for multi-tenant applications.
 
 ``` Typescript
-express.use("/auth/token", simpleAuthRouter({
+express.use("/auth/token", SimpleAuthRouter({
     appId: process.env.TAB_APP_ID as string,
     appIdUri: process.env.TAB_APP_URI as string,
     appSecret: process.env.TAB_APP_SECRET as string,
