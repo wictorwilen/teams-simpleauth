@@ -1,28 +1,34 @@
+// Copyright (c) Wictor Wilén. All rights reserved.
+// Licensed under the MIT license.
+
 import { Router } from "express";
 import { Passport } from "passport";
-import { BearerStrategy, IBearerStrategyOption, ITokenPayload, VerifyCallback } from "passport-azure-ad";
 import { ConfidentialClientApplication } from "@azure/msal-node";
 import { ISimpleAuthRouterOptions } from "./ISimpleAuthRouterOptions";
+import { SimpleAuthBearerStrategy } from "./SimpleAuthBearerStrategy";
+import debug from "debug";
 
-export const simpleAuthRouter = (options: ISimpleAuthRouterOptions): Router => {
+const log = debug("simpleauth");
+
+/**
+ * Creates the Teams Simpleauth router
+ * @param options options for the router
+ * @returns an Express router
+ * @example
+ * express.use("/auth/token", SimpleAuthRouter({
+ *   appId: process.env.TAB_APP_ID as string,
+ *   appIdUri: process.env.TAB_APP_URI as string,
+ *   appSecret: process.env.TAB_APP_SECRET as string,
+ *   scopes: ["Presence.Read"],
+ *   tenantId: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+* }));
+ */
+export const SimpleAuthRouter = (options: ISimpleAuthRouterOptions): Router => {
     const router = Router();
-
-    // Set up the Bearer Strategy
-    const bearerStrategy = new BearerStrategy({
-        identityMetadata: "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration",
-        clientID: options.appId,
-        audience: options.appIdUri,
-        loggingLevel: "warn",
-        validateIssuer: false,
-        passReqToCallback: false
-    } as IBearerStrategyOption, (token: ITokenPayload, done: VerifyCallback) => {
-        done(null, { tid: token.tid, name: token.name, upn: token.upn }, token);
-    }
-    );
 
     const pass = new Passport();
     router.use(pass.initialize());
-    pass.use(bearerStrategy);
+    pass.use(SimpleAuthBearerStrategy(options.appId, options.appIdUri));
 
     const confidentialClient = new ConfidentialClientApplication({
         auth: {
@@ -38,6 +44,7 @@ export const simpleAuthRouter = (options: ISimpleAuthRouterOptions): Router => {
             const authHeader = req.headers.authorization;
 
             if (authHeader === undefined) {
+                log("Missing authorization header");
                 res.status(401).send();
                 return;
             }
@@ -47,6 +54,7 @@ export const simpleAuthRouter = (options: ISimpleAuthRouterOptions): Router => {
                 scopes: options.scopes
             }).then(response => {
                 if (response !== null) {
+                    log("Successfully retrieved access token");
                     res.send(
                         {
                             access_token: response.accessToken,
@@ -54,10 +62,12 @@ export const simpleAuthRouter = (options: ISimpleAuthRouterOptions): Router => {
                             expires_on: response.expiresOn
                         });
                 } else {
+                    log("No response from on-behalf-of request");
                     res.status(401).send();
                 }
 
             }).catch(err => {
+                log(`Error when requesting access token: ${err}`);
                 res.status(500).send(err);
             });
         });

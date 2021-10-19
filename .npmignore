@@ -10,3 +10,7 @@ tsconfig.json
 .travis.yml
 tslint.json
 .eslintrc.json
+.eslintignore
+coverage
+jest.config.js
+junit.xml
