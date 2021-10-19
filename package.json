@@ -1,7 +1,7 @@
 {
   "name": "teams-simpleauth",
-  "version": "1.0.0-preview3",
-  "description": "",
+  "version": "1.0.0",
+  "description": "A node.js Microsoft Teams simpleauth implementation that works with the @microsoft/teamsfx client side component",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@azure/msal-node": "^1.1.0",
-    "debug": "^4.3.1",
+    "debug": "^4.3.2",
     "express": "^4.17.1",
     "passport": "^0.4.1",
     "passport-azure-ad": "^4.3.0"
