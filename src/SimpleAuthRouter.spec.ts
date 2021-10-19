@@ -4,7 +4,6 @@ import request from "supertest";
 import { ISimpleAuthRouterOptions } from "./ISimpleAuthRouterOptions";
 import { SimpleAuthRouter } from "./SimpleAuthRouter";
 import { AuthenticationResult, ConfidentialClientApplication } from "@azure/msal-node";
-import { initialize } from "passport";
 
 const acquireTokenOnBehalfOfMock = jest.fn().mockResolvedValue({});
 let authenticateResultMock: any = null;
@@ -18,7 +17,8 @@ jest.mock("passport", () => {
                 use: jest.fn().mockReturnValue({}),
                 authenticate: jest.fn().mockReturnValue((_req: any, _res: any, next: (a: any, b: any, c: any) => void) => { next(authenticateResultMock, {}, "asdf"); })
             }
-        })
+        }),
+        Strategy: jest.fn()
     }
 });
 
@@ -35,7 +35,13 @@ describe("SimpleAuthRouter", () => {
         });
 
         app = express();
-        app.use("/auth/token", SimpleAuthRouter(stub<ISimpleAuthRouterOptions>()));
+        app.use("/auth/token", SimpleAuthRouter({
+            appId: "4cb0e766-c9f1-48ed-8304-6d576cca7670",
+            appIdUri: "app://4cb0e766-c9f1-48ed-8304-6d576cca7670",
+            appSecret: "secret",
+            scopes: ["scope"],
+            tenantId: "common"
+        }));
     });
 
     it("Should return a 404 for a GET request", async () => {
